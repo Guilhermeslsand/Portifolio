@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .board {
+      display: flex;
+      flex-wrap: wrap;
+      width: 300px;
+      height: 300px;
+      border: 2px solid black;
+    }
+
+    .square {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      font-size: 36px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .square:hover {
+      background-color: orange;
+    }
+
+    .message {
+      margin-top: 10px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .reset-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="board">
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+  </div>
+
+  <div class="message"></div>
+
+  <button class="reset-button">Reiniciar</button>
+
+  <script>
+    const board = document.querySelector('.board');
+    const squares = document.querySelectorAll('.square');
+    const message = document.querySelector('.message');
+    const resetButton = document.querySelector('.reset-button');
+
+    let currentPlayer = 'X';
+
+    board.addEventListener('click', (event) => {
+      if (event.target.classList.contains('square')) {
+        if (event.target.textContent === '') {
+          event.target.textContent = currentPlayer;
+          if (checkForWinner()) {
+            message.textContent = `Vencedor: ${currentPlayer}`;
+            board.removeEventListener('click', handleBoardClick);
+          } else if (checkForDraw()) {
+            message.textContent = 'Empate';
+            board.removeEventListener('click', handleBoardClick);
+          } else {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          }
+        }
+      }
+    });
+
+    resetButton.addEventListener('click', () => {
+      currentPlayer = 'X';
+      message.textContent = '';
+      squares.forEach((square) => {
+        square.textContent = '';
+      });
+      board.addEventListener('click', handleBoardClick);
+    });
+
+    function checkForWinner() {
+      const combinations = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ];
+  
+      for (let i = 0; i < combinations.length; i++) {
+        const [a, b, c] = combinations[i];
+        if (squares[a].textContent === currentPlayer && squares[b].textContent === currentPlayer && squares[c].textContent === currentPlayer) {
+          return true;
+        }
+      }
+  
+      return false;
+    }
+  
+    function checkForDraw() {
+      for (let i = 0; i < squares.length; i++) {
+        if (squares[i].textContent === '') {
+          return false;
+        }
+      }
+  
+      return true;
+    }
+  </script>
+</body>
+</html>
+
+
+
